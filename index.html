@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>🏆 Tutoria XP · Professor Tutor Anos Finais · URE Caieiras</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(145deg, #0a2f6c 0%, #041a3a 100%);
+    min-height: 100vh;
+    padding: 20px;
+    color: #1e293b;
+  }
+  .main-container {
+    max-width: 1300px;
+    margin: 0 auto;
+    background: #0f1a24;
+    border-radius: 48px;
+    padding: 20px;
+    box-shadow: 0 30px 35px rgba(0,0,0,0.5), inset 0 1px 4px rgba(255,255,200,0.1);
+    border: 1px solid #d32f2f;
+  }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(10, 47, 108, 0.85);
+    backdrop-filter: blur(4px);
+    padding: 12px 24px;
+    border-radius: 60px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  .logo-area { display: flex; align-items: center; gap: 12px; }
+  .logo-area img { height: 50px; background: white; padding: 4px; border-radius: 12px; }
+  .logo-text { font-size: 1rem; font-weight: 600; color: #ffec9e; }
+  .title-badge { background: #d32f2f; color: white; padding: 6px 18px; border-radius: 3rem; font-weight: bold; letter-spacing: 1px; font-size: 0.85rem; }
+
+  .hud {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: white;
+    border-radius: 60px;
+    padding: 12px 20px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border: 1px solid #e0e4e9;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .hud-xp { display: flex; align-items: center; gap: 12px; background: #f1f5f9; padding: 6px 16px; border-radius: 60px; }
+  .xp-bar-wrap { width: 140px; height: 8px; background: #e2e8f0; border-radius: 20px; overflow: hidden; }
+  .xp-bar { height: 8px; background: linear-gradient(90deg, #0a2f6c, #d32f2f); border-radius: 20px; transition: width 0.5s ease; }
+  .badge { font-size: 0.7rem; font-weight: 700; padding: 4px 12px; border-radius: 60px; }
+  .badge-blue { background: #eef2ff; color: #1e40af; }
+  .badge-green { background: #dcfce7; color: #166534; }
+  .lives { display: flex; gap: 6px; }
+  .heart { font-size: 1.3rem; color: #d32f2f; transition: opacity 0.3s; }
+  .heart.lost { opacity: 0.2; }
+
+  .card { background: white; border-radius: 32px; padding: 1.5rem; margin-bottom: 1.8rem; box-shadow: 0 8px 20px rgba(0,0,0,0.2); border: 1px solid #e0e4e9; }
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  .intro-card { text-align: center; }
+  .intro-title { font-size: 1.6rem; font-weight: 800; color: #0a2f6c; margin-bottom: 0.5rem; }
+  .intro-sub { font-size: 0.9rem; color: #475569; margin-bottom: 1rem; }
+  .register-box { background: #f8fafc; border-radius: 28px; padding: 1.2rem; margin-bottom: 1.5rem; text-align: left; }
+  .register-box label { font-weight: 600; color: #0a2f6c; display: block; margin-top: 8px; margin-bottom: 4px; }
+  .register-box input { width: 100%; padding: 10px; border-radius: 60px; border: 1px solid #cbd5e1; }
+
+  .missions-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.2rem; }
+  .mission-card { background: white; border-radius: 28px; padding: 1.2rem; border: 1px solid #e2e8f0; cursor: pointer; transition: all 0.2s; position: relative; }
+  .mission-card:hover:not(.locked) { transform: translateY(-4px); border-color: #d32f2f; box-shadow: 0 12px 20px rgba(0,0,0,0.1); }
+  .mission-card.locked { opacity: 0.5; cursor: not-allowed; }
+  .mission-card.completed { border-color: #16a34a; background: #f0fdf4; }
+  .mc-icon { font-size: 2rem; display: block; margin-bottom: 0.5rem; }
+  .mc-title { font-size: 1.1rem; font-weight: 700; color: #0a2f6c; }
+  .lock-icon { position: absolute; top: 12px; right: 12px; color: #64748b; }
+
+  .ranking-box { background: #f1f5f9; border-radius: 28px; padding: 1rem; margin-top: 1.5rem; }
+  .ranking-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+  .ranking-table th, .ranking-table td { padding: 8px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+  .ranking-table th { color: #0a2f6c; }
+
+  .quiz-header { margin-bottom: 1rem; }
+  .quiz-meta { display: flex; justify-content: space-between; font-size: 0.8rem; color: #475569; margin-bottom: 8px; }
+  .progress-bar-wrap { height: 6px; background: #e2e8f0; border-radius: 10px; overflow: hidden; }
+  .progress-bar { height: 6px; background: #d32f2f; border-radius: 10px; transition: width 0.3s; }
+  .question-card { background: #f8fafc; border-radius: 28px; padding: 1.2rem; margin-bottom: 1rem; }
+  .question-scenario { font-size: 0.85rem; color: #d32f2f; background: #fff5f5; padding: 8px 12px; border-radius: 20px; margin-bottom: 1rem; border-left: 4px solid #d32f2f; }
+  .question-text { font-size: 1rem; font-weight: 600; color: #0a2f6c; }
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option-btn { background: white; border: 1px solid #e2e8f0; border-radius: 60px; padding: 12px 16px; text-align: left; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 12px; }
+  .option-btn:hover:not(:disabled) { border-color: #d32f2f; background: #fef2f2; }
+  .opt-letter { width: 28px; height: 28px; border-radius: 30px; background: #f1f5f9; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; }
+  .option-btn.correct { border-color: #16a34a; background: #dcfce7; }
+  .option-btn.correct .opt-letter { background: #16a34a; color: white; }
+  .option-btn.wrong { border-color: #d32f2f; background: #fee2e2; }
+  .option-btn.wrong .opt-letter { background: #d32f2f; color: white; }
+  .feedback-box { border-radius: 24px; padding: 1rem; margin-top: 1rem; display: none; }
+  .feedback-box.show { display: block; }
+  .feedback-box.correct { background: #dcfce7; border: 1px solid #86efac; color: #14532d; }
+  .feedback-box.wrong { background: #fee2e2; border: 1px solid #fca5a5; color: #7f1d1d; }
+  .next-btn { background: #0a2f6c; color: white; border: none; border-radius: 60px; padding: 10px 24px; font-weight: 600; cursor: pointer; margin-top: 1rem; display: none; }
+  .next-btn.show { display: inline-block; }
+  .next-btn:hover { background: #d32f2f; }
+
+  .result-card { text-align: center; }
+  .result-stats { display: flex; justify-content: center; gap: 1.5rem; margin: 1rem 0; }
+  .stat-box { background: #f8fafc; border-radius: 20px; padding: 0.75rem 1rem; min-width: 80px; }
+  .stat-num { font-size: 1.6rem; font-weight: 800; color: #0a2f6c; }
+  .result-xp-gain { background: #eef2ff; display: inline-block; padding: 6px 16px; border-radius: 60px; margin-bottom: 1rem; }
+  .btn-row { display: flex; gap: 12px; justify-content: center; margin-top: 1rem; }
+  .btn-primary { background: #0a2f6c; color: white; border: none; border-radius: 60px; padding: 10px 24px; font-weight: 600; cursor: pointer; }
+  .btn-primary:hover { background: #d32f2f; }
+  .btn-outline { background: white; border: 1px solid #cbd5e1; border-radius: 60px; padding: 10px 24px; font-weight: 600; cursor: pointer; }
+
+  footer { text-align: center; margin-top: 2rem; padding: 1rem; color: #b4c8e0; font-size: 0.75rem; border-top: 1px solid #2c4c6e; }
+  @media (max-width: 640px) { .main-container { padding: 12px; } .hud { flex-direction: column; align-items: stretch; } }
+</style>
+</head>
+<body>
+<div class="main-container">
+  <div class="header">
+    <div class="logo-area"><img src="https://i.ibb.co/0p01LzxB/logo3de.jpg" alt="Logo SEDUC SP"><div class="logo-text">URE CAIEIRAS - Seduc SP</div></div>
+    <div class="title-badge"><i class="fas fa-gamepad"></i> Tutoria XP · Modo Game</div>
+  </div>
+
+  <div id="game">
+    <div class="hud">
+      <div class="hud-xp"><i class="fas fa-bolt" style="color:#d32f2f;"></i><span style="font-weight:700" id="xp-display">0 XP</span><div class="xp-bar-wrap"><div class="xp-bar" id="xp-bar" style="width:0%"></div></div></div>
+      <div class="badge badge-blue" id="hud-nivel">Tutor Iniciante</div>
+      <div class="lives" id="lives-display"><i class="fas fa-heart heart" id="h1"></i><i class="fas fa-heart heart" id="h2"></i><i class="fas fa-heart heart" id="h3"></i></div>
+    </div>
+
+    <!-- INTRO COM REGISTRO -->
+    <div class="screen active" id="screen-intro">
+      <div class="card intro-card">
+        <div style="font-size:3rem; margin-bottom:0.5rem;">🎓</div>
+        <div class="intro-title">Missão: Professor Tutor</div>
+        <div class="intro-sub">Você foi convocado para o Projeto Professor Tutor Anos Finais da URE Caieiras. Complete as missões, ganhe XP e torne-se um <strong>Tutor Mestre</strong>.</div>
+        <div class="register-box">
+          <label><i class="fas fa-user"></i> Seu nome completo</label>
+          <input type="text" id="playerName" placeholder="Ex: Ana Maria Silva">
+          <label><i class="fas fa-school"></i> Escola</label>
+          <input type="text" id="playerSchool" placeholder="Nome da escola">
+        </div>
+        <button class="btn-primary" onclick="registrarJogador()">Registrar e Iniciar Jornada →</button>
+        <div class="ranking-box">
+          <h3 style="margin-bottom:8px;"><i class="fas fa-trophy"></i> Ranking dos Tutores</h3>
+          <table class="ranking-table" id="rankingTable">
+            <thead><tr><th>Pos</th><th>Nome</th><th>Escola</th><th>XP</th><th>Missões</th></tr></thead>
+            <tbody id="rankingBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- MISSÕES -->
+    <div class="screen" id="screen-missions">
+      <div class="card">
+        <div class="card-header" style="font-weight:800; font-size:1.2rem; border-left:4px solid #d32f2f; padding-left:12px; margin-bottom:1rem;">🗺️ Escolha sua missão</div>
+        <div class="missions-grid" id="missions-grid"></div>
+        <div class="ranking-box" style="margin-top:1rem;">
+          <h3 style="margin-bottom:8px;"><i class="fas fa-trophy"></i> Ranking dos Tutores</h3>
+          <table class="ranking-table"><thead><tr><th>Pos</th><th>Nome</th><th>Escola</th><th>XP</th><th>Missões</th></tr></thead><tbody id="rankingBody2"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUIZ -->
+    <div class="screen" id="screen-quiz">
+      <div class="card">
+        <div class="quiz-header"><div class="quiz-meta"><span class="quiz-mission" id="quiz-mission-label"></span><span class="quiz-progress" id="quiz-progress"></span></div><div class="progress-bar-wrap"><div class="progress-bar" id="quiz-prog-bar" style="width:0%"></div></div></div>
+        <div class="question-card"><div class="question-scenario" id="q-scenario" style="display:none"></div><div class="question-text" id="q-text"></div></div>
+        <div class="options" id="options-container"></div>
+        <div class="feedback-box" id="feedback-box"><div class="feedback-title" id="feedback-title"></div><div id="feedback-text"></div></div>
+        <button class="next-btn" id="next-btn" onclick="nextQuestion()">Próxima →</button>
+      </div>
+    </div>
+
+    <!-- RESULTADO -->
+    <div class="screen" id="screen-result">
+      <div class="card result-card">
+        <div class="result-stars" id="result-stars"></div>
+        <div class="result-title" id="result-title"></div>
+        <div class="result-sub" id="result-sub"></div>
+        <div class="result-stats"><div class="stat-box"><div class="stat-num" id="res-acertos">0</div><div class="stat-label">Acertos</div></div><div class="stat-box"><div class="stat-num" id="res-erros">0</div><div class="stat-label">Erros</div></div><div class="stat-box"><div class="stat-num" id="res-score">0%</div><div class="stat-label">Aproveitamento</div></div></div>
+        <div class="result-xp-gain" id="result-xp-gain">+0 XP</div>
+        <div class="btn-row"><button class="btn-outline" onclick="retryMission()">Tentar novamente</button><button class="btn-primary" onclick="showScreen('screen-missions')">Outras missões →</button></div>
+      </div>
+    </div>
+
+    <!-- GAME OVER -->
+    <div class="screen" id="screen-gameover">
+      <div class="card result-card"><div style="font-size:3rem;">💀</div><div class="result-title">Vidas esgotadas!</div><div class="intro-sub" style="margin-bottom:1rem;">Revise o material e tente novamente!</div><button class="btn-primary" onclick="resetGame()">Recomeçar do zero</button></div>
+    </div>
+  </div>
+  <footer><i class="fas fa-graduation-cap"></i> Gamificação baseada nos documentos oficiais · URE Caieiras</footer>
+</div>
+
+<script>
+// ==================== MISSÕES COMPLETAS ====================
+const MISSIONS = [
+  { // Missão 1 - Organização das Aulas
+    id: 'missao1', title: 'Organização das Aulas', desc: 'Domine a dinâmica de aulas e tarefas semanais', icon: '📅', xpReward: 100,
+    questions: [
+      { scenario: 'Você é novo no Projeto Professor Tutor e precisa entender como as aulas funcionam durante a semana.', text: 'Quantas aulas de tutoria por componente curricular o projeto prevê por semana?', opts: ['1 a 2 aulas', '3 a 4 aulas', '5 aulas', 'Depende da escola'], correct: 1, feedback: 'Correto! O projeto prevê de 3 a 4 aulas semanais por componente curricular para cada turma de tutoria.', feedbackWrong: 'Errado. O projeto prevê 3 a 4 aulas semanais por componente.' },
+      { scenario: 'Professora Ana tem uma turma com 3 aulas semanais de tutoria. Ela quer saber quando deve lançar o Registro de Percurso na SED.', text: 'Em qual aula da semana a Profª Ana deve fazer o Registro de Percurso (O Disparo)?', opts: ['Na 1ª aula', 'Entre a 1ª e a 2ª aula', 'Na 3ª aula', 'Em qualquer aula'], correct: 1, feedback: 'Exato! Para turmas com 3 aulas, o Registro de Percurso é feito entre a 1ª e a 2ª aula, e a Tarefa SP ocorre na 3ª (última).', feedbackWrong: 'Não. Para turmas com 3 aulas, o registro ocorre entre a 1ª e a 2ª aula.' },
+      { scenario: 'O Professor Carlos tem turmas com 4 aulas semanais.', text: 'Para turmas com 4 aulas, em qual aula a Tarefa SP fica disponível para o aluno?', opts: ['Na 2ª aula', 'Na 3ª aula', 'A partir da 2ª aula', 'Na 1ª aula seguinte'], correct: 2, feedback: 'Correto! Registro entre 1ª e 2ª aula, Tarefa SP disponível a partir da 2ª aula.', feedbackWrong: 'Não. Para 4 aulas: registro entre 1ª e 2ª aula, tarefa disponível a partir da 2ª aula.' },
+      { scenario: 'Uma estudante pergunta por que a Tarefa SP apareceu automaticamente no celular dela.', text: 'O que faz a Tarefa SP aparecer automaticamente para o estudante?', opts: ['O diretor libera manualmente', 'O professor lança o Registro de Percurso na SED', 'O aluno precisa solicitar', 'O sistema libera toda segunda-feira'], correct: 1, feedback: 'Isso mesmo! Ao lançar o Registro de Percurso na SED, a Tarefa SP é liberada automaticamente.', feedbackWrong: 'Não. É o professor que, ao lançar o Registro de Percurso, dispara a tarefa.' }
+    ]
+  },
+  { // Missão 2 - Registros na SED
+    id: 'missao2', title: 'Registros na SED', desc: 'Domine os Registros de Entrada, Percurso e a rotina da Tarefa SP', icon: '📝', xpReward: 120,
+    questions: [
+      { scenario: 'Um novo aluno chegou à turma de tutoria no meio do mês.', text: 'Qual é a regra obrigatória para a data do Registro de Entrada?', opts: ['Qualquer dia útil', 'Obrigatoriamente uma segunda-feira', 'Primeiro dia do mês', 'Qualquer dia que o aluno comparecer'], correct: 1, feedback: 'Correto! O Registro de Entrada deve ser feito obrigatoriamente em uma segunda-feira.', feedbackWrong: 'Errado. A data deve ser obrigatoriamente uma segunda-feira.' },
+      { scenario: 'A coordenadora pergunta: "Quantas vezes você faz o Registro de Entrada de um aluno?"', text: 'Com que frequência o Registro de Entrada é feito para cada aluno?', opts: ['Toda semana', 'Todo mês', 'Uma única vez por aluno', 'A cada bimestre'], correct: 2, feedback: 'Exato! Registro de Entrada é feito uma única vez por aluno.', feedbackWrong: 'Não. É feito apenas UMA VEZ por aluno.' },
+      { scenario: 'É quinta-feira, penúltima aula da semana.', text: 'O que o professor deve fazer neste momento na SED?', opts: ['Lançar Registro de Entrada', 'Lançar Registro de Percurso', 'Corrigir tarefas', 'Planejar atividades'], correct: 1, feedback: 'Correto! Penúltima aula é momento do Registro de Percurso.', feedbackWrong: 'Não. Na penúltima aula, deve lançar o Registro de Percurso.' },
+      { scenario: 'A Tarefa SP tem apenas 3 questões. Alguns alunos terminam rápido.', text: 'O que o professor tutor deve fazer quando alunos terminam a Tarefa SP rapidamente?', opts: ['Sair mais cedo', 'Celular livremente', 'Prever atividades extras (Horizonte, jogos)', 'Passar exercício do caderno'], correct: 2, feedback: 'Correto! Prever atividades extras é a prática recomendada.', feedbackWrong: 'Não. O professor deve prever atividades complementares como retomada do Horizonte ou jogos.' }
+    ]
+  },
+  { // Missão 3 - Relatórios Tutoria
+    id: 'missao3', title: 'Relatórios Tutoria', desc: 'Use os relatórios como bússola pedagógica', icon: '📊', xpReward: 150,
+    questions: [
+      { scenario: 'A supervisora pede ao professor para acessar a plataforma de tutoria.', text: 'Qual é o caminho correto para acessar o Relatório Tutoria?', opts: ['Portal da Escola > Tutoria', 'sed.educacao.sp.gov.br > login > card TUTORIA', 'Intranet SEDUC > Relatórios', 'Portalnet > Gestão de Turmas'], correct: 1, feedback: 'Exato! O acesso é: sed.educacao.sp.gov.br → login → card TUTORIA.', feedbackWrong: 'Caminho incorreto.' },
+      { scenario: 'A professora quer ter uma visão geral de quantos alunos já avançaram de nível.', text: 'Qual visão do relatório ela deve usar?', opts: ['Visão Estudante', 'Visão Turma', 'Visão Bimestral', 'Qualquer uma'], correct: 1, feedback: 'Correto! Visão Turma mostra o panorama geral da sala.', feedbackWrong: 'Não. Para visão geral, use Visão Turma.' },
+      { scenario: 'O aluno João está com dificuldade. A professora quer saber exatamente quais tarefas ele concluiu.', text: 'Qual visão do relatório é ideal para acompanhar o João individualmente?', opts: ['Visão Turma', 'Visão Estudante', 'Visão Bimestral', 'Histórico de Percurso'], correct: 1, feedback: 'Exato! Visão Estudante tem foco individualizado.', feedbackWrong: 'Não. Para acompanhamento individual, use Visão Estudante.' },
+      { scenario: 'Qual é a função principal dos Relatórios Tutoria, conforme o projeto?', text: 'Função principal:', opts: ['Gerar notas', 'Apoiar intervenções pedagógicas e ser bússola do diagnóstico', 'Controlar frequência', 'Substituir diário de classe'], correct: 1, feedback: 'Perfeito! Apoiar intervenções e ser bússola do diagnóstico.', feedbackWrong: 'Errado. A função é apoiar intervenções pedagógicas.' },
+      { scenario: 'Após a Tarefa SP, o aluno Marcos errou 2 das 3 questões.', text: 'O que o professor deve fazer IMEDIATAMENTE?', opts: ['Registrar para próxima semana', 'Devolutiva formativa e imediata', 'Enviar bilhete para os pais', 'Repetir a mesma tarefa'], correct: 1, feedback: 'Exato! Devolutiva formativa e imediata.', feedbackWrong: 'Não. O professor deve dar devolutiva imediata na mesma aula.' }
+    ]
+  },
+  { // Missão 4 - BOSS (baseada no PDF "Qual a sala de aula que melhor representa...")
+    id: 'missao4', title: 'BOSS: Sala de Aula Alinhada', desc: 'Desafio final: analise as cenas e identifique as práticas alinhadas ao projeto', icon: '🏆', xpReward: 250,
+    questions: [
+      { scenario: 'Analise a atuação do professor tutor: Cena 1: sentado à mesa; Cena 2: apenas explicando no quadro; Cena 3: circulando e orientando grupos.', text: 'Qual cena melhor representa uma atuação alinhada à proposta do Projeto Professor Tutor?', opts: ['Cena 1', 'Cena 2', 'Cena 3', 'Nenhuma'], correct: 2, feedback: 'Correto! A Cena 3 evidencia atuação próxima, ativa e intencional – mediador que circula, orienta e intervém em tempo real.', feedbackWrong: 'Errado. A atuação alinhada é a Cena 3: professor circula e acompanha grupos.' },
+      { scenario: 'Uso do Material Horizonte: Cena 1 – todos na mesma página; Cena 2 – alunos com materiais abertos em diferentes níveis; Cena 3 – alunos sem material.', text: 'Qual cena está melhor alinhada ao uso do material no Projeto?', opts: ['Cena 1', 'Cena 2', 'Cena 3', 'Todas'], correct: 1, feedback: 'Exato! A Cena 2 mostra estudantes com materiais abertos e em uso, com níveis diferentes, respeitando o ritmo individual.', feedbackWrong: 'Não. O projeto preza pelo uso diferenciado do material – Cena 2.' },
+      { scenario: 'Foco no engajamento: Cena 1 – alunos passivos; Cena 2 – alunos dispersos; Cena 3 – alunos em pequenos grupos, conversando e construindo juntos.', text: 'Qual cena representa o engajamento produtivo alinhado ao projeto?', opts: ['Cena 1', 'Cena 2', 'Cena 3', 'Nenhuma'], correct: 2, feedback: 'Correto! Cena 3 mostra engajamento ativo, colaborativo, com professor circulando.', feedbackWrong: 'Errado. O projeto espera engajamento ativo – Cena 3.' },
+      { scenario: 'Uma das práticas NÃO deve acontecer no projeto, segundo o documento.', text: 'Qual alternativa é um exemplo do que NÃO deve acontecer?', opts: ['Turmas por nível de proficiência', 'Uso diferenciado do material', 'Aula 100% expositiva', 'Atividades extras (jogos)'], correct: 2, feedback: 'Correto! Aula 100% expositiva não está alinhada – o projeto exige estratégias participativas.', feedbackWrong: 'Não. O que não deve acontecer é a aula exclusivamente expositiva.' },
+      { scenario: 'O documento destaca aspectos que devem ser evitados.', text: 'Qual destes NÃO é um comportamento esperado no Projeto?', opts: ['Uso mecânico do material, apenas preenchimento', 'Comunicação clara dos objetivos', 'Respeito ao ritmo individual', 'Turmas por nível de proficiência'], correct: 0, feedback: 'Exato! Uso mecânico do material, sem mediação, é o que não se deve fazer.', feedbackWrong: 'Errado. O uso mecânico do material é justamente o que se deve evitar.' },
+      { scenario: 'Sobre a organização das turmas no projeto.', text: 'O que deve prevalecer na formação das turmas de tutoria?', opts: ['Ano/série do aluno', 'Nível de proficiência', 'Disponibilidade de horário', 'Ordem alfabética'], correct: 1, feedback: 'Correto! O nível de proficiência deve prevalecer sobre o ano/série.', feedbackWrong: 'Não. O documento afirma que o nível de proficiência é o critério principal.' },
+      { scenario: 'Sobre a comunicação com os estudantes sobre o projeto.', text: 'Qual atitude gera engajamento e pertencimento?', opts: ['Dizer que é "reforço"', 'Comunicar claramente os objetivos', 'Manter sigilo', 'Usar como punição'], correct: 1, feedback: 'Correto! Comunicação clara gera sentimento de pertencimento.', feedbackWrong: 'Errado. O estigma de "reforço" ou "punição" prejudica a participação.' },
+      { scenario: 'Sobre a rotina do professor tutor na Tarefa SP.', text: 'Qual ação NÃO está de acordo com a rotina esperada?', opts: ['Conferir conclusão', 'Analisar desempenho', 'Realizar devolutiva', 'Ignorar os resultados'], correct: 3, feedback: 'Correto! Ignorar resultados é o oposto da rotina esperada.', feedbackWrong: 'Não. O professor deve conferir, analisar e dar devolutiva – nunca ignorar.' }
+    ]
+  }
+];
+
+// ==================== ESTADO DO JOGO E RANKING ====================
+let currentPlayer = { name: '', school: '', xp: 0, completed: [] };
+let state = { xp: 0, lives: 3, completedMissions: [], currentMission: null, currentQ: 0, score: 0, errors: 0, answered: false };
+let ranking = [];
+
+function loadRanking() {
+  const stored = localStorage.getItem('tutoriaRanking');
+  if (stored) ranking = JSON.parse(stored);
+  else ranking = [];
+  renderRanking();
+}
+function saveRanking() {
+  localStorage.setItem('tutoriaRanking', JSON.stringify(ranking));
+  renderRanking();
+}
+function renderRanking() {
+  const sorted = [...ranking].sort((a,b) => b.xp - a.xp).slice(0,10);
+  const tbody1 = document.getElementById('rankingBody');
+  const tbody2 = document.getElementById('rankingBody2');
+  if (tbody1) tbody1.innerHTML = sorted.map((p, idx) => `<tr><td>${idx+1}</td><td>${p.name}</td><td>${p.school}</td><td>${p.xp}</td><td>${p.completedCount}/${MISSIONS.length}</td></tr>`).join('');
+  if (tbody2) tbody2.innerHTML = sorted.map((p, idx) => `<tr><td>${idx+1}</td><td>${p.name}</td><td>${p.school}</td><td>${p.xp}</td><td>${p.completedCount}/${MISSIONS.length}</td></tr>`).join('');
+}
+function updateRankingForCurrentPlayer() {
+  if (!currentPlayer.name) return;
+  const idx = ranking.findIndex(p => p.name === currentPlayer.name && p.school === currentPlayer.school);
+  if (idx >= 0) {
+    ranking[idx].xp = state.xp;
+    ranking[idx].completedCount = state.completedMissions.length;
+  } else {
+    ranking.push({ name: currentPlayer.name, school: currentPlayer.school, xp: state.xp, completedCount: state.completedMissions.length });
+  }
+  saveRanking();
+}
+function registrarJogador() {
+  const name = document.getElementById('playerName').value.trim();
+  const school = document.getElementById('playerSchool').value.trim();
+  if (!name || !school) { alert('Preencha nome e escola para começar!'); return; }
+  currentPlayer = { name, school, xp: 0, completed: [] };
+  const saved = localStorage.getItem(`tutoria_progress_${name}_${school}`);
+  if (saved) {
+    try {
+      const prog = JSON.parse(saved);
+      state.xp = prog.xp || 0;
+      state.completedMissions = prog.completedMissions || [];
+    } catch(e) {}
+  } else {
+    state.xp = 0;
+    state.completedMissions = [];
+  }
+  state.lives = 3;
+  updateRankingForCurrentPlayer();
+  updateHUD();
+  showScreen('screen-missions');
+}
+function saveProgress() {
+  if (!currentPlayer.name) return;
+  const data = { xp: state.xp, completedMissions: state.completedMissions };
+  localStorage.setItem(`tutoria_progress_${currentPlayer.name}_${currentPlayer.school}`, JSON.stringify(data));
+  updateRankingForCurrentPlayer();
+}
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (id === 'screen-missions') renderMissions();
+}
+function updateHUD() {
+  document.getElementById('xp-display').textContent = state.xp + ' XP';
+  const pct = Math.min(100, Math.round((state.xp % 300) / 300 * 100));
+  document.getElementById('xp-bar').style.width = pct + '%';
+  let nivel = 'Tutor Iniciante';
+  if (state.xp >= 500) nivel = 'Tutor Experiente';
+  if (state.xp >= 800) nivel = 'Tutor Mestre';
+  document.getElementById('hud-nivel').textContent = nivel;
+  ['h1','h2','h3'].forEach((id, i) => {
+    const el = document.getElementById(id);
+    if (i >= state.lives) el.classList.add('lost');
+    else el.classList.remove('lost');
+  });
+}
+function renderMissions() {
+  const grid = document.getElementById('missions-grid');
+  grid.innerHTML = '';
+  MISSIONS.forEach((m, idx) => {
+    const locked = idx > 0 && !state.completedMissions.includes(MISSIONS[idx-1].id);
+    const done = state.completedMissions.includes(m.id);
+    const card = document.createElement('div');
+    card.className = 'mission-card' + (locked ? ' locked' : '') + (done ? ' completed' : '');
+    card.innerHTML = `<span class="mc-icon">${m.icon}</span><div class="mc-title">${m.title}</div><div class="mc-desc">${m.desc}</div>${done ? '<span class="badge badge-green" style="margin-top:8px;">✓ Concluída</span>' : ''}${locked ? '<i class="fas fa-lock lock-icon"></i>' : ''}<div style="margin-top:10px; font-size:0.75rem;">+${m.xpReward} XP · ${m.questions.length} questões</div>`;
+    if (!locked) card.onclick = () => startMission(m);
+    grid.appendChild(card);
+  });
+}
+function startMission(m) {
+  state.currentMission = m;
+  state.currentQ = 0;
+  state.score = 0;
+  state.errors = 0;
+  state.answered = false;
+  showScreen('screen-quiz');
+  renderQuestion();
+}
+function renderQuestion() {
+  const m = state.currentMission;
+  const q = m.questions[state.currentQ];
+  const total = m.questions.length;
+  document.getElementById('quiz-mission-label').innerHTML = `${m.icon} ${m.title}`;
+  document.getElementById('quiz-progress').textContent = `Questão ${state.currentQ+1} de ${total}`;
+  document.getElementById('quiz-prog-bar').style.width = Math.round((state.currentQ/total)*100)+'%';
+  const sc = document.getElementById('q-scenario');
+  if (q.scenario) { sc.style.display = 'block'; sc.textContent = q.scenario; }
+  else sc.style.display = 'none';
+  document.getElementById('q-text').textContent = q.text;
+  const letters = ['A','B','C','D'];
+  const cont = document.getElementById('options-container');
+  cont.innerHTML = '';
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="opt-letter">${letters[i]}</span>${opt}`;
+    btn.onclick = () => selectAnswer(i, btn);
+    cont.appendChild(btn);
+  });
+  document.getElementById('feedback-box').className = 'feedback-box';
+  document.getElementById('next-btn').classList.remove('show');
+  state.answered = false;
+}
+function selectAnswer(idx, btn) {
+  if (state.answered) return;
+  state.answered = true;
+  const q = state.currentMission.questions[state.currentQ];
+  const allBtns = document.querySelectorAll('.option-btn');
+  allBtns.forEach(b => b.disabled = true);
+  const fb = document.getElementById('feedback-box');
+  const fTitle = document.getElementById('feedback-title');
+  const fText = document.getElementById('feedback-text');
+  if (idx === q.correct) {
+    btn.classList.add('correct');
+    state.score++;
+    fb.className = 'feedback-box correct show';
+    fTitle.textContent = '✓ Acertou!';
+    fText.textContent = q.feedback;
+  } else {
+    btn.classList.add('wrong');
+    allBtns[q.correct].classList.add('correct');
+    state.errors++;
+    state.lives = Math.max(0, state.lives - 1);
+    updateHUD();
+    fb.className = 'feedback-box wrong show';
+    fTitle.textContent = '✗ Errou!';
+    fText.textContent = q.feedbackWrong;
+    if (state.lives === 0) { setTimeout(() => showScreen('screen-gameover'), 1800); return; }
+  }
+  const isLast = state.currentQ === state.currentMission.questions.length - 1;
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.classList.add('show');
+  nextBtn.textContent = isLast ? 'Ver resultado →' : 'Próxima →';
+}
+function nextQuestion() {
+  state.currentQ++;
+  if (state.currentQ >= state.currentMission.questions.length) showResult();
+  else renderQuestion();
+}
+function showResult() {
+  const m = state.currentMission;
+  const total = m.questions.length;
+  const pct = Math.round((state.score/total)*100);
+  const xpGain = Math.round((pct/100)*m.xpReward);
+  state.xp += xpGain;
+  if (pct >= 75 && !state.completedMissions.includes(m.id)) state.completedMissions.push(m.id);
+  updateHUD();
+  saveProgress();
+  let stars = pct >= 100 ? '⭐⭐⭐' : pct >= 75 ? '⭐⭐' : '⭐';
+  let title = pct >= 75 ? 'Missão concluída!' : 'Missão incompleta';
+  let sub = pct >= 75 ? `Você dominou "${m.title}".` : `Acertou ${pct}%. Precisa de 75% para desbloquear a próxima.`;
+  document.getElementById('result-stars').innerHTML = stars;
+  document.getElementById('result-title').textContent = title;
+  document.getElementById('result-sub').textContent = sub;
+  document.getElementById('res-acertos').textContent = state.score;
+  document.getElementById('res-erros').textContent = state.errors;
+  document.getElementById('res-score').textContent = pct + '%';
+  document.getElementById('result-xp-gain').textContent = '+' + xpGain + ' XP';
+  showScreen('screen-result');
+}
+function retryMission() { if (state.currentMission) startMission(state.currentMission); }
+function resetGame() { state = { xp:0, lives:3, completedMissions:[], currentMission:null, currentQ:0, score:0, errors:0, answered:false }; updateHUD(); saveProgress(); showScreen('screen-intro'); }
+
+loadRanking();
+updateHUD();
+</script>
+</body>
+</html>
