@@ -6,7 +6,6 @@
 <title>🏆 Tutoria XP · Professor Tutor Anos Finais · URE Caieiras</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 <style>
@@ -126,8 +125,6 @@
   .btn-outline { background: white; border: 1px solid #cbd5e1; border-radius: 60px; padding: 10px 24px; font-weight: 600; cursor: pointer; }
 
   footer { text-align: center; margin-top: 2rem; padding: 1rem; color: #b4c8e0; font-size: 0.75rem; border-top: 1px solid #2c4c6e; }
-  .loading { display: inline-block; width: 16px; height: 16px; border: 2px solid #fff; border-radius: 50%; border-top-color: transparent; animation: spin 0.6s linear infinite; margin-left: 8px; }
-  @keyframes spin { to { transform: rotate(360deg); } }
   @media (max-width: 640px) { .main-container { padding: 12px; } .hud { flex-direction: column; align-items: stretch; } }
 </style>
 </head>
@@ -221,41 +218,47 @@ const db = firebase.firestore();
 
 // ==================== DADOS DAS MISSÕES (completo) ====================
 const MISSIONS = [
-  { id: 'missao1', title: 'Organização das Aulas', desc: 'Domine a dinâmica de aulas e tarefas semanais', icon: '📅', xpReward: 100, questions: [ ... ] },
-  { id: 'missao2', title: 'Registros na SED', desc: 'Domine os Registros de Entrada, Percurso e a rotina da Tarefa SP', icon: '📝', xpReward: 120, questions: [ ... ] },
-  { id: 'missao3', title: 'Relatórios Tutoria', desc: 'Use os relatórios como bússola pedagógica', icon: '📊', xpReward: 150, questions: [ ... ] },
-  { id: 'missao4', title: 'BOSS: Sala de Aula Alinhada', desc: 'Desafio final: analise as cenas e identifique as práticas alinhadas ao projeto', icon: '🏆', xpReward: 250, questions: [ ... ] }
-];
-
-// ==================== PREENCHER PERGUNTAS ====================
-MISSIONS[0].questions = [
-  { scenario: 'Você é novo no Projeto Professor Tutor...', text: 'Quantas aulas de tutoria por componente curricular o projeto prevê por semana?', opts: ['1 a 2 aulas', '3 a 4 aulas', '5 aulas', 'Depende da escola'], correct: 1, feedback: 'Correto!', feedbackWrong: 'Errado. São 3 a 4 aulas.' },
-  { scenario: 'Professora Ana tem uma turma com 3 aulas semanais...', text: 'Em qual aula da semana a Profª Ana deve fazer o Registro de Percurso?', opts: ['Na 1ª aula', 'Entre a 1ª e a 2ª aula', 'Na 3ª aula', 'Em qualquer aula'], correct: 1, feedback: 'Exato!', feedbackWrong: 'Não.' },
-  { scenario: 'Professor Carlos tem turmas com 4 aulas semanais...', text: 'Para turmas com 4 aulas, em qual aula a Tarefa SP fica disponível?', opts: ['Na 2ª aula', 'Na 3ª aula', 'A partir da 2ª aula', 'Na 1ª aula seguinte'], correct: 2, feedback: 'Correto!', feedbackWrong: 'Não.' },
-  { scenario: 'Uma estudante pergunta por que a Tarefa SP apareceu automaticamente...', text: 'O que faz a Tarefa SP aparecer automaticamente?', opts: ['Diretor libera', 'Professor lança Registro de Percurso', 'Aluno solicita', 'Sistema libera segunda'], correct: 1, feedback: 'Correto!', feedbackWrong: 'Errado.' }
-];
-MISSIONS[1].questions = [
-  { scenario: 'Novo aluno chegou no meio do mês...', text: 'Regra obrigatória para data do Registro de Entrada?', opts: ['Qualquer dia', 'Segunda-feira', 'Primeiro dia do mês', 'Qualquer dia que comparecer'], correct: 1, feedback: 'Correto!', feedbackWrong: 'Errado.' },
-  { scenario: 'Coordenadora pergunta sobre frequência do Registro de Entrada...', text: 'Com que frequência é feito?', opts: ['Toda semana', 'Todo mês', 'Uma única vez', 'A cada bimestre'], correct: 2, feedback: 'Exato!', feedbackWrong: 'Não.' },
-  { scenario: 'Quinta-feira, penúltima aula...', text: 'O que o professor deve fazer na SED?', opts: ['Registro Entrada', 'Registro Percurso', 'Corrigir tarefas', 'Planejar atividades'], correct: 1, feedback: 'Correto!', feedbackWrong: 'Não.' },
-  { scenario: 'Tarefa SP tem 3 questões, alunos terminam rápido...', text: 'O que o professor deve fazer?', opts: ['Sair mais cedo', 'Celular livre', 'Atividades extras (Horizonte, jogos)', 'Passar exercício caderno'], correct: 2, feedback: 'Correto!', feedbackWrong: 'Não.' }
-];
-MISSIONS[2].questions = [
-  { scenario: 'Supervisora pede acesso ao relatório...', text: 'Caminho correto para acessar o Relatório Tutoria?', opts: ['Portal > Tutoria', 'sed.educacao.sp.gov.br > login > card TUTORIA', 'Intranet > Relatórios', 'Portalnet > Gestão'], correct: 1, feedback: 'Exato!', feedbackWrong: 'Errado.' },
-  { scenario: 'Professora quer visão geral da turma...', text: 'Qual visão usar?', opts: ['Visão Estudante', 'Visão Turma', 'Visão Bimestral', 'Qualquer'], correct: 1, feedback: 'Correto!', feedbackWrong: 'Não.' },
-  { scenario: 'João com dificuldade, saber tarefas concluídas...', text: 'Qual visão ideal?', opts: ['Visão Turma', 'Visão Estudante', 'Visão Bimestral', 'Histórico'], correct: 1, feedback: 'Exato!', feedbackWrong: 'Não.' },
-  { scenario: 'Função principal dos relatórios...', text: 'Função principal:', opts: ['Gerar notas', 'Apoiar intervenções e ser bússola', 'Controlar frequência', 'Substituir diário'], correct: 1, feedback: 'Perfeito!', feedbackWrong: 'Errado.' },
-  { scenario: 'Marcos errou 2 de 3 questões...', text: 'O que fazer IMEDIATAMENTE?', opts: ['Registrar p/ semana', 'Devolutiva formativa', 'Bilhete aos pais', 'Repetir tarefa'], correct: 1, feedback: 'Exato!', feedbackWrong: 'Não.' }
-];
-MISSIONS[3].questions = [
-  { scenario: 'Atuação do professor: Cena1 sentado, Cena2 só explica, Cena3 circula...', text: 'Qual cena melhor alinhada?', opts: ['Cena 1', 'Cena 2', 'Cena 3', 'Nenhuma'], correct: 2, feedback: 'Correto! Cena 3: mediação ativa.', feedbackWrong: 'Errado. É a Cena 3.' },
-  { scenario: 'Uso do Material Horizonte: Cena1 todos mesma página, Cena2 níveis diferentes, Cena3 sem material...', text: 'Qual cena melhor alinhada?', opts: ['Cena 1', 'Cena 2', 'Cena 3', 'Todas'], correct: 1, feedback: 'Exato! Cena 2: percursos diferenciados.', feedbackWrong: 'Não. Cena 2.' },
-  { scenario: 'Engajamento: Cena1 passivos, Cena2 dispersos, Cena3 grupos colaborativos...', text: 'Qual cena representa engajamento produtivo?', opts: ['Cena 1', 'Cena 2', 'Cena 3', 'Nenhuma'], correct: 2, feedback: 'Correto! Cena 3: participação ativa.', feedbackWrong: 'Errado. Cena 3.' },
-  { scenario: 'Prática que NÃO deve acontecer...', text: 'Qual alternativa NÃO deve ocorrer?', opts: ['Turmas por nível', 'Uso diferenciado material', 'Aula 100% expositiva', 'Atividades extras'], correct: 2, feedback: 'Correto! Aula expositiva exclusiva não é adequada.', feedbackWrong: 'Não.' },
-  { scenario: 'Comportamento a ser evitado...', text: 'Qual NÃO é esperado?', opts: ['Uso mecânico do material', 'Comunicação clara', 'Respeito ao ritmo', 'Turmas por nível'], correct: 0, feedback: 'Exato! Uso mecânico deve ser evitado.', feedbackWrong: 'Errado.' },
-  { scenario: 'Organização das turmas...', text: 'O que deve prevalecer?', opts: ['Ano/série', 'Nível de proficiência', 'Disponibilidade', 'Ordem alfabética'], correct: 1, feedback: 'Correto! Nível de proficiência.', feedbackWrong: 'Não.' },
-  { scenario: 'Comunicação com estudantes...', text: 'Qual atitude gera engajamento?', opts: ['Dizer que é reforço', 'Comunicar claramente os objetivos', 'Manter sigilo', 'Usar como punição'], correct: 1, feedback: 'Correto!', feedbackWrong: 'Errado.' },
-  { scenario: 'Rotina do tutor na Tarefa SP...', text: 'Qual ação NÃO está de acordo?', opts: ['Conferir conclusão', 'Analisar desempenho', 'Realizar devolutiva', 'Ignorar resultados'], correct: 3, feedback: 'Correto! Ignorar é o oposto.', feedbackWrong: 'Não.' }
+  { // Missão 1
+    id: 'missao1', title: 'Organização das Aulas', desc: 'Domine a dinâmica de aulas e tarefas semanais', icon: '📅', xpReward: 100,
+    questions: [
+      { scenario: 'Você é novo no Projeto Professor Tutor e precisa entender como as aulas funcionam durante a semana.', text: 'Quantas aulas de tutoria por componente curricular o projeto prevê por semana?', opts: ['1 a 2 aulas', '3 a 4 aulas', '5 aulas', 'Depende da escola'], correct: 1, feedback: 'Correto! O projeto prevê de 3 a 4 aulas semanais por componente curricular para cada turma de tutoria.', feedbackWrong: 'Errado. O projeto prevê 3 a 4 aulas semanais por componente.' },
+      { scenario: 'Professora Ana tem uma turma com 3 aulas semanais de tutoria. Ela quer saber quando deve lançar o Registro de Percurso na SED.', text: 'Em qual aula da semana a Profª Ana deve fazer o Registro de Percurso (O Disparo)?', opts: ['Na 1ª aula', 'Entre a 1ª e a 2ª aula', 'Na 3ª aula', 'Em qualquer aula'], correct: 1, feedback: 'Exato! Para turmas com 3 aulas, o Registro de Percurso é feito entre a 1ª e a 2ª aula, e a Tarefa SP ocorre na 3ª (última).', feedbackWrong: 'Não. Para turmas com 3 aulas, o registro ocorre entre a 1ª e a 2ª aula.' },
+      { scenario: 'O Professor Carlos tem turmas com 4 aulas semanais.', text: 'Para turmas com 4 aulas, em qual aula a Tarefa SP fica disponível para o aluno?', opts: ['Na 2ª aula', 'Na 3ª aula', 'A partir da 2ª aula', 'Na 1ª aula seguinte'], correct: 2, feedback: 'Correto! Registro entre 1ª e 2ª aula, Tarefa SP disponível a partir da 2ª aula.', feedbackWrong: 'Não. Para 4 aulas: registro entre 1ª e 2ª aula, tarefa disponível a partir da 2ª aula.' },
+      { scenario: 'Uma estudante pergunta por que a Tarefa SP apareceu automaticamente no celular dela.', text: 'O que faz a Tarefa SP aparecer automaticamente para o estudante?', opts: ['O diretor libera manualmente', 'O professor lança o Registro de Percurso na SED', 'O aluno precisa solicitar', 'O sistema libera toda segunda-feira'], correct: 1, feedback: 'Isso mesmo! Ao lançar o Registro de Percurso na SED, a Tarefa SP é liberada automaticamente.', feedbackWrong: 'Não. É o professor que, ao lançar o Registro de Percurso, dispara a tarefa.' }
+    ]
+  },
+  { // Missão 2
+    id: 'missao2', title: 'Registros na SED', desc: 'Domine os Registros de Entrada, Percurso e a rotina da Tarefa SP', icon: '📝', xpReward: 120,
+    questions: [
+      { scenario: 'Um novo aluno chegou à turma de tutoria no meio do mês.', text: 'Qual é a regra obrigatória para a data do Registro de Entrada?', opts: ['Qualquer dia útil', 'Obrigatoriamente uma segunda-feira', 'Primeiro dia do mês', 'Qualquer dia que o aluno comparecer'], correct: 1, feedback: 'Correto! O Registro de Entrada deve ser feito obrigatoriamente em uma segunda-feira.', feedbackWrong: 'Errado. A data deve ser obrigatoriamente uma segunda-feira.' },
+      { scenario: 'A coordenadora pergunta: "Quantas vezes você faz o Registro de Entrada de um aluno?"', text: 'Com que frequência o Registro de Entrada é feito para cada aluno?', opts: ['Toda semana', 'Todo mês', 'Uma única vez por aluno', 'A cada bimestre'], correct: 2, feedback: 'Exato! Registro de Entrada é feito uma única vez por aluno.', feedbackWrong: 'Não. É feito apenas UMA VEZ por aluno.' },
+      { scenario: 'É quinta-feira, penúltima aula da semana.', text: 'O que o professor deve fazer neste momento na SED?', opts: ['Lançar Registro de Entrada', 'Lançar Registro de Percurso', 'Corrigir tarefas', 'Planejar atividades'], correct: 1, feedback: 'Correto! Penúltima aula é momento do Registro de Percurso.', feedbackWrong: 'Não. Na penúltima aula, deve lançar o Registro de Percurso.' },
+      { scenario: 'A Tarefa SP tem apenas 3 questões. Alguns alunos terminam rápido.', text: 'O que o professor tutor deve fazer quando alunos terminam a Tarefa SP rapidamente?', opts: ['Sair mais cedo', 'Celular livremente', 'Prever atividades extras (Horizonte, jogos)', 'Passar exercício do caderno'], correct: 2, feedback: 'Correto! Prever atividades extras é a prática recomendada.', feedbackWrong: 'Não. O professor deve prever atividades complementares como retomada do Horizonte ou jogos.' }
+    ]
+  },
+  { // Missão 3
+    id: 'missao3', title: 'Relatórios Tutoria', desc: 'Use os relatórios como bússola pedagógica', icon: '📊', xpReward: 150,
+    questions: [
+      { scenario: 'A supervisora pede ao professor para acessar a plataforma de tutoria.', text: 'Qual é o caminho correto para acessar o Relatório Tutoria?', opts: ['Portal da Escola > Tutoria', 'sed.educacao.sp.gov.br > login > card TUTORIA', 'Intranet SEDUC > Relatórios', 'Portalnet > Gestão de Turmas'], correct: 1, feedback: 'Exato! O acesso é: sed.educacao.sp.gov.br → login → card TUTORIA.', feedbackWrong: 'Caminho incorreto.' },
+      { scenario: 'A professora quer ter uma visão geral de quantos alunos já avançaram de nível.', text: 'Qual visão do relatório ela deve usar?', opts: ['Visão Estudante', 'Visão Turma', 'Visão Bimestral', 'Qualquer uma'], correct: 1, feedback: 'Correto! Visão Turma mostra o panorama geral da sala.', feedbackWrong: 'Não. Para visão geral, use Visão Turma.' },
+      { scenario: 'O aluno João está com dificuldade. A professora quer saber exatamente quais tarefas ele concluiu.', text: 'Qual visão do relatório é ideal para acompanhar o João individualmente?', opts: ['Visão Turma', 'Visão Estudante', 'Visão Bimestral', 'Histórico de Percurso'], correct: 1, feedback: 'Exato! Visão Estudante tem foco individualizado.', feedbackWrong: 'Não. Para acompanhamento individual, use Visão Estudante.' },
+      { scenario: 'Qual é a função principal dos Relatórios Tutoria, conforme o projeto?', text: 'Função principal:', opts: ['Gerar notas', 'Apoiar intervenções pedagógicas e ser bússola do diagnóstico', 'Controlar frequência', 'Substituir diário de classe'], correct: 1, feedback: 'Perfeito! Apoiar intervenções e ser bússola do diagnóstico.', feedbackWrong: 'Errado. A função é apoiar intervenções pedagógicas.' },
+      { scenario: 'Após a Tarefa SP, o aluno Marcos errou 2 das 3 questões.', text: 'O que o professor deve fazer IMEDIATAMENTE?', opts: ['Registrar para próxima semana', 'Devolutiva formativa e imediata', 'Enviar bilhete para os pais', 'Repetir a mesma tarefa'], correct: 1, feedback: 'Exato! Devolutiva formativa e imediata.', feedbackWrong: 'Não. O professor deve dar devolutiva imediata na mesma aula.' }
+    ]
+  },
+  { // Missão 4 - BOSS
+    id: 'missao4', title: 'BOSS: Sala de Aula Alinhada', desc: 'Desafio final: analise as cenas e identifique as práticas alinhadas ao projeto', icon: '🏆', xpReward: 250,
+    questions: [
+      { scenario: 'Analise a atuação do professor tutor: Cena 1: sentado à mesa; Cena 2: apenas explicando no quadro; Cena 3: circulando e orientando grupos.', text: 'Qual cena melhor representa uma atuação alinhada à proposta do Projeto Professor Tutor?', opts: ['Cena 1', 'Cena 2', 'Cena 3', 'Nenhuma'], correct: 2, feedback: 'Correto! A Cena 3 evidencia atuação próxima, ativa e intencional – mediador que circula, orienta e intervém em tempo real.', feedbackWrong: 'Errado. A atuação alinhada é a Cena 3: professor circula e acompanha grupos.' },
+      { scenario: 'Uso do Material Horizonte: Cena 1 – todos na mesma página; Cena 2 – alunos com materiais abertos em diferentes níveis; Cena 3 – alunos sem material.', text: 'Qual cena está melhor alinhada ao uso do material no Projeto?', opts: ['Cena 1', 'Cena 2', 'Cena 3', 'Todas'], correct: 1, feedback: 'Exato! A Cena 2 mostra estudantes com materiais abertos e em uso, com níveis diferentes, respeitando o ritmo individual.', feedbackWrong: 'Não. O projeto preza pelo uso diferenciado do material – Cena 2.' },
+      { scenario: 'Foco no engajamento: Cena 1 – alunos passivos; Cena 2 – alunos dispersos; Cena 3 – alunos em pequenos grupos, conversando e construindo juntos.', text: 'Qual cena representa o engajamento produtivo alinhado ao projeto?', opts: ['Cena 1', 'Cena 2', 'Cena 3', 'Nenhuma'], correct: 2, feedback: 'Correto! Cena 3 mostra engajamento ativo, colaborativo, com professor circulando.', feedbackWrong: 'Errado. O projeto espera engajamento ativo – Cena 3.' },
+      { scenario: 'Uma das práticas NÃO deve acontecer no projeto, segundo o documento.', text: 'Qual alternativa é um exemplo do que NÃO deve acontecer?', opts: ['Turmas por nível de proficiência', 'Uso diferenciado do material', 'Aula 100% expositiva', 'Atividades extras (jogos)'], correct: 2, feedback: 'Correto! Aula 100% expositiva não está alinhada – o projeto exige estratégias participativas.', feedbackWrong: 'Não. O que não deve acontecer é a aula exclusivamente expositiva.' },
+      { scenario: 'O documento destaca aspectos que devem ser evitados.', text: 'Qual destes NÃO é um comportamento esperado no Projeto?', opts: ['Uso mecânico do material, apenas preenchimento', 'Comunicação clara dos objetivos', 'Respeito ao ritmo individual', 'Turmas por nível de proficiência'], correct: 0, feedback: 'Exato! Uso mecânico do material, sem mediação, é o que não se deve fazer.', feedbackWrong: 'Errado. O uso mecânico do material é justamente o que se deve evitar.' },
+      { scenario: 'Sobre a organização das turmas no projeto.', text: 'O que deve prevalecer na formação das turmas de tutoria?', opts: ['Ano/série do aluno', 'Nível de proficiência', 'Disponibilidade de horário', 'Ordem alfabética'], correct: 1, feedback: 'Correto! O nível de proficiência deve prevalecer sobre o ano/série.', feedbackWrong: 'Não. O documento afirma que o nível de proficiência é o critério principal.' },
+      { scenario: 'Sobre a comunicação com os estudantes sobre o projeto.', text: 'Qual atitude gera engajamento e pertencimento?', opts: ['Dizer que é "reforço"', 'Comunicar claramente os objetivos', 'Manter sigilo', 'Usar como punição'], correct: 1, feedback: 'Correto! Comunicação clara gera sentimento de pertencimento.', feedbackWrong: 'Errado. O estigma de "reforço" ou "punição" prejudica a participação.' },
+      { scenario: 'Sobre a rotina do professor tutor na Tarefa SP.', text: 'Qual ação NÃO está de acordo com a rotina esperada?', opts: ['Conferir conclusão', 'Analisar desempenho', 'Realizar devolutiva', 'Ignorar os resultados'], correct: 3, feedback: 'Correto! Ignorar resultados é o oposto da rotina esperada.', feedbackWrong: 'Não. O professor deve conferir, analisar e dar devolutiva – nunca ignorar.' }
+    ]
+  }
 ];
 
 // ==================== ESTADO GLOBAL ====================
@@ -291,7 +294,9 @@ async function registrarJogador() {
   const name = document.getElementById('playerName').value.trim();
   const school = document.getElementById('playerSchool').value.trim();
   if (!name || !school) { alert('Preencha nome e escola!'); return; }
-  document.getElementById('btnRegistrar').innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Registrando...';
+  const btn = document.getElementById('btnRegistrar');
+  btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Registrando...';
+  btn.disabled = true;
   try {
     const q = await db.collection('tutores').where('name', '==', name).where('school', '==', school).get();
     if (!q.empty) {
@@ -310,7 +315,7 @@ async function registrarJogador() {
     showScreen('screen-missions');
     await loadRanking();
   } catch (err) { alert('Erro ao conectar ao Firebase. Tente novamente.'); console.error(err); }
-  finally { document.getElementById('btnRegistrar').innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Registrar e Iniciar Jornada →'; }
+  finally { btn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Registrar e Iniciar Jornada →'; btn.disabled = false; }
 }
 async function saveProgress() {
   if (!currentPlayer.id) return;
@@ -326,7 +331,7 @@ function renderRanking() {
   if (tbody2) tbody2.innerHTML = html || '<tr><td colspan="5">Nenhum tutor registrado ainda.</td></tr>';
 }
 
-// ==================== FUNÇÕES DO JOGO (idênticas ao original com saveProgress) ====================
+// ==================== FUNÇÕES DO JOGO ====================
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -457,13 +462,14 @@ function resetGame() {
   saveProgress();
   showScreen('screen-intro');
 }
+
 // Inicialização
-loadRanking();
-document.getElementById('btnRegistrar').onclick = registrarJogador;
 window.showScreen = showScreen;
 window.nextQuestion = nextQuestion;
 window.retryMission = retryMission;
 window.resetGame = resetGame;
+document.getElementById('btnRegistrar').onclick = registrarJogador;
+loadRanking();
 updateHUD();
 </script>
 </body>
